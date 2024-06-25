@@ -15,7 +15,7 @@ const createTextTexture = () => {
 
   // Draw orange text on the canvas (aligned to the center)
   context.font = "Bold 30px Arial";
-  context.fillStyle = "orange";
+  context.fillStyle = "white";
   context.textAlign = "center"; // Align center for the text
   context.textBaseline = "middle";
   context.fillText("universal", canvas.width / 2, canvas.height / 2);
@@ -29,7 +29,6 @@ const createTextTexture = () => {
 
 const Sphere = () => {
   const meshRef = useRef();
-  const [rotation, setRotation] = useState([0, 0, 0]);
   const [scale, setScale] = useState(1);
 
   useEffect(() => {
@@ -44,42 +43,30 @@ const Sphere = () => {
     };
   }, []);
 
-  useFrame(() => {
-    if (meshRef.current) {
-      meshRef.current.rotation.set(rotation[0], rotation[1], rotation[2]);
-      meshRef.current.scale.set(scale, scale, scale);
-    }
-  });
-
-  const handleClick = () => {
-    const randomRotation = [
-      Math.random() * 2 * Math.PI,
-      Math.random() * 2 * Math.PI,
-      Math.random() * 2 * Math.PI,
-    ];
-    setRotation(randomRotation);
-  };
-
   const textTexture = createTextTexture();
 
   return (
-    <mesh ref={meshRef} onClick={handleClick}>
+    <mesh ref={meshRef}>
       <sphereGeometry args={[1.5, 32, 32]} />
-      <meshStandardMaterial map={textTexture} />
+      <meshStandardMaterial map={textTexture} emissive="#fc6603" />
     </mesh>
   );
 };
 
 const App = () => {
   return (
-    <Canvas style={{ height: "100vh" }}>
+    <Canvas
+      camera={{ position: [3, 0, 0.1] }}
+      style={{ height: "100vh", backgroundColor: "#a83275" }}
+    >
       <ambientLight />
       <pointLight position={[10, 10, 10]} />
       <Sphere />
       <OrbitControls
-        enableZoom={true}
-        maxDistance={10} // Maximum zoom-out distance
-        minDistance={1} // Minimum zoom-in distance
+        enablePan={false}
+        rotateSpeed={0.5}
+        maxDistance={40}
+        minDistance={4}
       />
     </Canvas>
   );
